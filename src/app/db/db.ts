@@ -60,3 +60,46 @@ export async function getActive(userId: string): Promise<boolean | null> {
     throw new Error("Database Error");
   }
 }
+interface Route {
+  route_name: string;
+  route_sequence: number;
+}
+
+interface UnitRoute {
+  unitName: string;
+  routes: Route[];
+}
+
+export async function sendData(): Promise<UnitRoute[]> {
+  try {
+    const pool = await sql.connect(config);
+    const unitsResult = await pool
+      .request()
+      .query("SELECT unit FROM route_list");
+    const unitNames = unitsResult.recordset.map(
+      (unit: { unit: string }) => unit.unit
+    );
+
+    const dataPromises = unitNames.map(async (unit) => {
+      const routeArray = await pool
+        .request()
+        .query(
+          `SELECT route_name, route_sequence FROM route_list WHERE unit = '${unit}'`
+        );
+      const routes = routeArray.recordset.map(
+        (route: { route_name: string; route_sequence: number }) => ({
+          route_name: route.route_name,
+          route_sequence: route.route_sequence,
+        })
+      );
+      return { unitName: unit, routes };
+    });
+
+    const data: UnitRoute[] = await Promise.all(dataPromises);
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error("Database Error", error);
+    throw new Error("Database Error");
+  }
+}
