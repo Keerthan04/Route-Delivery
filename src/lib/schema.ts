@@ -21,3 +21,8 @@ export const EntryFormSchema = z.object({
     message: "Please select the status",
   }),
 });
+
+export const ReportFormSchema = z.object({
+  date: z.string().min(2, { message: "Date is required" }),
+  unit: z.string().min(2, { message: "Unit is required" }),
+});

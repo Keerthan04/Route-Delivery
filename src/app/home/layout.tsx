@@ -94,7 +94,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <main className="flex-grow p-8 bg-gray-100">{children}</main>
 
       <footer className="bg-gray-900 p-4 text-center text-gray-400">
-        &copy; 2024 MTL. All rights reserved.
+        Copyright 2024 © All Rights Reserved. The Manipal Group
       </footer>
     </div>
   );
