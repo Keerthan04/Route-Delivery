@@ -2,13 +2,45 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
 
-  const handleLogout = () => {
-    router.push("/login");
+  const handleLogout = async () => {
+    try{
+      const res = await fetch('/api/logout',
+        {
+          method: 'GET',
+          credentials: "include",
+        }
+      );
+      if(!res.ok){
+        const data = await res.json();
+        toast.error(data.message);
+      }
+      else{
+        toast.success("Logged out successfully");
+        setTimeout(()=>{
+          router.push('/');
+        },1500);
+      }
+    }catch(error:any){
+      console.error("Failed to logout:", error);
+      toast.error("Failed to logout");
+    }
   };
 
   const toggleMenu = () => {
@@ -60,12 +92,22 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             </svg>
           </button>
         </div>
-        <button
-          onClick={handleLogout}
-          className="hidden md:block bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition duration-300"
-        >
-          Logout
-        </button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="destructive">Log Out</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>LogOut</DialogTitle>
+              <DialogDescription>
+                Are You sure You want to LogOut
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button onClick={handleLogout}>Logout</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </nav>
 
       {isMenuOpen && (
