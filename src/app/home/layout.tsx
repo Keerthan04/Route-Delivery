@@ -12,32 +12,29 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import "./layout.css";
+
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
 
   const handleLogout = async () => {
-    try{
-      const res = await fetch('/api/logout',
-        {
-          method: 'GET',
-          credentials: "include",
-        }
-      );
-      if(!res.ok){
+    try {
+      const res = await fetch('/api/logout', {
+        method: 'GET',
+        credentials: "include",
+      });
+      if (!res.ok) {
         const data = await res.json();
         toast.error(data.message);
-      }
-      else{
+      } else {
         toast.success("Logged out successfully");
-        setTimeout(()=>{
+        setTimeout(() => {
           router.push('/');
-        },1500);
+        }, 1500);
       }
-    }catch(error:any){
+    } catch (error: any) {
       console.error("Failed to logout:", error);
       toast.error("Failed to logout");
     }
@@ -49,30 +46,54 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <nav className="bg-gray-900 p-4 flex justify-between items-center shadow-lg">
+      <nav className="bg-gray-100 p-4 flex justify-between items-center shadow-md">
         <div className="flex items-center space-x-4">
-          <span className="text-2xl font-bold text-blue-400">
+          <span className="text-xl font-bold text-blue-600">
             <Link href="/home">MTL</Link>
           </span>
-          <div className="hidden md:flex space-x-6">
-            <Link
-              href="/home/entry"
-              className="text-md font-bold text-white hover:text-blue-400 transition duration-300"
-            >
-              Entry
-            </Link>
-            <Link
-              href="/home/report"
-              className="text-md font-bold text-white hover:text-blue-400 transition duration-300"
-            >
-              Report
-            </Link>
-          </div>
+        </div>
+        <div className="hidden md:flex items-center justify-center flex-grow space-x-6">
+          <Link
+            href="/home/entry"
+            className="text-md font-bold text-black hover:text-blue-400 transition duration-300"
+          >
+            Entry
+          </Link>
+          <Link
+            href="/home"
+            className="text-md font-bold text-black hover:text-blue-400 transition duration-300"
+          >
+            HOME
+          </Link>
+          <Link
+            href="/home/report"
+            className="text-md font-bold text-black hover:text-blue-400 transition duration-300"
+          >
+            Report
+          </Link>
+        </div>
+        <div className="hidden md:flex items-center space-x-4">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="destructive">Log Out</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>LogOut</DialogTitle>
+                <DialogDescription>
+                  Are you sure you want to log out?
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button onClick={handleLogout}>Logout</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
         <div className="md:hidden">
           <button
             onClick={toggleMenu}
-            className="text-white focus:outline-none"
+            className="text-gray-700 focus:outline-none"
           >
             <svg
               className="w-6 h-6"
@@ -92,35 +113,25 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             </svg>
           </button>
         </div>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="destructive">Log Out</Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>LogOut</DialogTitle>
-              <DialogDescription>
-                Are You sure You want to LogOut
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button onClick={handleLogout}>Logout</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </nav>
 
       {isMenuOpen && (
-        <div className="md:hidden bg-gray-900 p-4">
+        <div className="md:hidden bg-gray-100 p-4">
           <Link
             href="/home/entry"
-            className="block text-md font-bold text-white hover:text-yellow-400 transition duration-300 mb-2"
+            className="block text-md font-bold text-black hover:text-blue-400 transition duration-300 mb-2"
           >
             Entry
           </Link>
           <Link
+            href="/home"
+            className="block text-md font-bold text-black hover:text-blue-400 transition duration-300 mb-2"
+          >
+            HOME
+          </Link>
+          <Link
             href="/home/report"
-            className="block text-md font-bold text-white hover:text-yellow-400 transition duration-300 mb-2"
+            className="block text-md font-bold text-black hover:text-blue-400 transition duration-300 mb-2"
           >
             Report
           </Link>

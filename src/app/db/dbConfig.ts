@@ -4,7 +4,7 @@ dotenvConfig();
 
 export const config = {
   user: process.env.DB_USER || "sa",
-  password: process.env.DB_PASSWORD || "Kumarc@2004",
+  password: process.env.DB_PASSWORD || "sourabh",
   server: process.env.DB_HOST || "localhost",
   database: process.env.DB_NAME || "Route_Delay",
   options: {
